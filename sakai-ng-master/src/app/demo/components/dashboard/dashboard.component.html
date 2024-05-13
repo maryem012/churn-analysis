@@ -1,0 +1,199 @@
+  
+    
+
+<p-card class="">
+
+    <div class="upload-card">
+        <div class="upload-container">
+          <label for="fileInput" class="file-label">Choose Excel File</label>
+          <input type="file" id="fileInput" (change)="onFileSelected($event)" class="file-input">
+          <button (click)="uploadAndPredict()" class="upload-button">
+            <span>Upload and Predict</span>
+            <i class="pi pi-upload"></i>
+          </button>
+          <span *ngIf="file">{{file.name}}</span>
+
+        </div>
+      </div>
+      
+      
+</p-card>
+  <hr>
+   <div class="grid">
+        
+       
+        <div class="col-12 lg:col-6 xl:col-6">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Total charges</span>
+                        <div class="text-900 font-medium text-xl">{{ file ?  this.charges  : '-' }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-orange-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-map-marker text-orange-500 text-xl"></i>
+                    </div>
+                </div>
+                <span class="text-green-500 font-medium">%52+ </span>
+                <span class="text-500">since last week</span>
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-6">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Customers</span>
+                        <div class="text-900 font-medium text-xl" >  {{ file ? this.fileData.length : '-' }}
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-inbox text-cyan-500 text-xl"></i>
+                    </div>
+                </div>
+                <span class="text-green-500 font-medium">{{ file ? this.fileData.length : '-' }}  </span>
+                <span class="text-500">customers in the system</span>
+            </div>
+        </div>
+   
+
+        <div class="col-12 xl:col-6">
+            <div class="card">
+                <h5>Data </h5>
+                <p-table [value]="fileData" [paginator]="true" [rows]="5" >
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Customer Id</th>
+                        <th>Gender</th>
+                        <th>Tenure</th>
+                        <th>total Charges</th>
+                        <th>Monthly Charges</th>
+                        <!-- Add more table headers for other properties as needed -->
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-product *ngIf="!fileData || fileData==null">
+                        <tr>
+                            <td><p-skeleton /></td>
+                            <td><p-skeleton /></td>
+                            <td><p-skeleton /></td>
+                            <td><p-skeleton /></td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData>
+                      <tr>
+                        <td>{{ fileData ?rowData.customerID : '-'}}</td>
+                        <td>{{ fileData ? rowData.gender : '-'}}</td>
+                        <td>{{ fileData ? rowData.tenure : '-'}}</td>
+                        <td>{{ fileData ? rowData.TotalCharges: '-'}}</td>
+                        <td>{{fileData ?  rowData.MonthlyCharges: '-' }}</td>
+                        <!-- Add more table cells for other properties as needed -->
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                  
+            </div>
+            <div class="card">
+                <button class="info-button" (click)="showInfo()">?</button>
+
+                <p-dropdown id="drop" [options]="featureOptions" [(ngModel)]="selectedFeature" placeholder="Select a feature" (onChange)="loadPartialDependence(selectedFeature)"></p-dropdown>
+                <p-chart type="line" [data]="partialDependenceData" [options]="partialoptions" width="400px"></p-chart>
+            </div>
+        </div>
+
+        <div class="col-12 xl:col-6">
+            <div class="card">
+                
+                <p-chart type="pie" [data]="churnData" [options]="churnOptions"></p-chart>
+            </div>
+
+            <div class="card">
+                <div class="flex align-items-center justify-content-between mb-6" style="height: 300px; ">
+                    <p-chart id="clv" type="bar" [data]="clvData" [options]="clvOptions" [style]=""></p-chart>
+
+                </div>
+
+               
+            </div>
+
+        
+    </div>
+    <div class="col-12 xl:col-12">
+        <div class="card">
+   
+            
+            <div class="chart-container">
+                <p-chart #myChart type="bar" [data]="data" [options]="options" ></p-chart>
+            </div>
+                    </div>
+
+
+    
+</div>
+
+</div>
+
+<style>
+    #clv{
+        width: 100%;
+    };
+   #btn{
+    float: right;
+    margin-left: 400px;
+   }
+   .upload-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.upload-container {
+  display: flex;
+  align-items: center;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.file-label:hover {
+  background-color: #0056b3;
+}
+
+.upload-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.upload-button:hover {
+  background-color: #0056b3;
+}
+
+.upload-button span {
+  margin-right: 5px;
+}
+.info-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 2;}
+</style>
